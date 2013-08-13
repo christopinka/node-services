@@ -1,23 +1,34 @@
-exports.findById = function(req, res) {
-    console.log(req.params);
-    var id = parseInt(req.params.id);
-    console.log('findById: ' + id);
-    db.collection('employees', function(err, collection) {
-        collection.findOne({'id': id}, function(err, item) {
-            console.log(item);
-            res.jsonp(item);
-        });
-    });
-};
-
-var postData = req.body;
-  var postKeys = Object.keys( postData );
+exports.findByName = function(req, res) {
+  // var postData = req.body;
+  var patient = req.body.patient
   var baseURL = 'http://onecdsmedcalc3000dev.azurewebsites.net/Calculators/CallToView?viewName=DiabetesRiskPrediction/';
   var queryString = '';
 
-  for (var key in postKeys) {
-    if (key == 0) queryString += '?' + postKeys[key] + '=' + postData[ postKeys[key] ];
-    else queryString += '&' + postKeys[key] + '=' + postData[ postKeys[key] ];
-  }
+  var name = req.params.id;
+    console.log('findByName: ' + req.params.id);
 
-  res.send(baseURL + queryString);
+    //now find the url for the calculator id
+
+  queryString += '?';
+  queryString += 'age' + '=';
+  if (patient.age !== null) {
+    queryString + patient.age;
+    };
+  queryString += '?' + 'sex' + '=' + patient.sex;
+  queryString += '&' + "height" + '=' + patient.height;
+  queryString += '&' + "weight" + '=' + patient.weight;
+  queryString += '&' + "fbs" + '=' + patient.loincLab.fbsSpelledOut.value;
+  queryString += '&' + "pAtm" + '=' + patient.loincLab.pAtmSpelledOut.value;
+
+  // res.contentType('application/json')
+  var calculator = calculators.filter(function (calculator) { return calculator.name == name });
+  res.jsonp(calculator);
+  // res.send(baseURL + queryString);
+};
+
+var calculators = [
+        {"id": 1
+        , "name": "diabetes-risk"
+        , "basUrl": "http://onecdsmedcalc3000dev.azurewebsites.net/Calculators/CallToView?viewName=DiabetesRiskPrediction/"
+        , "params": ["age","sex","height","weight","fbs","pAtm"]}
+        ]

@@ -10,6 +10,7 @@ app.use( express.bodyParser() );
 app.get('/employees/:id/reports', employees.findByManager);
 app.get('/employees/:id', employees.findById);
 app.get('/employees', employees.findAll);
+app.post('/calculators/:id', calculators.findByName);
 
 // {
 //   "patient": {
@@ -47,24 +48,8 @@ app.get('/employees', employees.findAll);
 //         }
 //     }
 // }
-app.post('/diabetes-risk', function(req, res){
-  // var postData = req.body;
-  var patient = req.body.patient
-  console.log('Adding wine: ' + JSON.stringify(req.body));
-  console.log(patient);
-  var baseURL = 'http://onecdsmedcalc3000dev.azurewebsites.net/Calculators/CallToView?viewName=DiabetesRiskPrediction/';
-  var queryString = '';
 
-  queryString += '?' + 'age' + '=' + patient.age;
-  queryString += '?' + 'sex' + '=' + patient.sex;
-  queryString += '&' + "height" + '=' + patient.height;
-  queryString += '&' + "weight" + '=' + patient.weight;
-  queryString += '&' + "fbs" + '=' + patient.loincLab.fbsSpelledOut.value;
-  queryString += '&' + "pAtm" + '=' + patient.loincLab.pAtmSpelledOut.value;
 
-  res.contentType('application/json')
-  res.send(baseURL + queryString);
-});
 
 app.listen(3000);
 console.log('Listening on port 3000...');
